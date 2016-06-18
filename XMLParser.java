@@ -6,25 +6,25 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class XMLParser implements Serializable{
-    public Terminal readXMLFile() throws FileNotFoundException, XMLStreamException {
+    public Terminal readXMLFile(String pathName) throws FileNotFoundException, XMLStreamException{
 
-        Integer transactionAmount = null;
+        BigDecimal transactionAmount = null;
         Integer transactionDeposit = null;
         Integer transactionID = null;
         String transactionType = null;
 
-        File xmlFile = new File("C:\\Users\\DotinSchool2\\Desktop\\DotinProject2\\src\\main\\resources\\terminal.xml");
+      //  File xmlFile = new File("C:\\Users\\DotinSchool2\\Desktop\\DotinProject2\\src\\main\\resources\\terminal1.xml");
 
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLEventReader eventReader = factory.createXMLEventReader(new FileReader(xmlFile));
+        XMLEventReader eventReader = factory.createXMLEventReader(new FileReader(pathName));
 
         Terminal terminal = new Terminal();
         ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
@@ -56,7 +56,7 @@ public class XMLParser implements Serializable{
                         transaction.setId(Integer.valueOf(attributes.next().getValue()));
                         transaction.setType(attributes.next().getValue());
                         transactionList.add(transaction);*/
-                        transactionAmount = Integer.parseInt(attributes.next().getValue().trim().replace(",", ""));
+                        transactionAmount = (new BigDecimal(attributes.next().getValue().trim().replace(",", "")));
                         transactionDeposit = Integer.valueOf(attributes.next().getValue());
                         transactionID = Integer.valueOf(attributes.next().getValue());
                         transactionType = attributes.next().getValue();
@@ -65,8 +65,9 @@ public class XMLParser implements Serializable{
                 case XMLStreamConstants.END_ELEMENT:
                     EndElement endElement = event.asEndElement();
                     if (endElement.getName().getLocalPart().equalsIgnoreCase("transaction")) {
- //                       transactionList.add(transaction);
-                        transactionList.add(new Transaction(transactionID,transactionType,transactionAmount,transactionDeposit));
+                        Transaction trx = new Transaction(transactionID, transactionType, transactionAmount, transactionDeposit);
+                        trx.setTerminalId(terminal.getId());
+                        transactionList.add(trx);
                     }
                     break;
             }

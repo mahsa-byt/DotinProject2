@@ -1,7 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Terminal implements Serializable{
+public class Terminal implements Serializable {
     private int terminalId;
     private String terminalType;
     private String serverIP;
@@ -56,6 +56,7 @@ public class Terminal implements Serializable{
     public ArrayList<Transaction> getTransactions() {
         return transactions;
     }
+
     public Terminal(){
 
     }
